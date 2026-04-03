@@ -1,0 +1,2666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SQA Training Platform — Junior Engineer Bootcamp</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --surface3: #242840;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #00e5a0;
+    --accent2: #00bcd4;
+    --accent3: #ff6b6b;
+    --accent4: #ffd166;
+    --text: #e8eaf0;
+    --text2: #8a8fa8;
+    --text3: #5a5f78;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Sora', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+    transition: transform 0.3s;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .logo-badge {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .sidebar-logo h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .sidebar-logo p {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 3px;
+  }
+  .sidebar-progress-wrap {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-progress-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .progress-bar-outer {
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s;
+  }
+  .progress-pct {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  nav { flex: 1; padding: 12px 0; }
+  .nav-section-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--text3);
+    padding: 12px 20px 4px;
+    text-transform: uppercase;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--text2);
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active {
+    color: var(--accent);
+    background: rgba(0,229,160,0.06);
+    border-left-color: var(--accent);
+  }
+  .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent3);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+  .nav-badge.done { background: var(--accent); color: #000; }
+
+  /* ── MAIN ── */
+  #main {
+    margin-left: 240px;
+    flex: 1;
+    min-height: 100vh;
+  }
+  .page { display: none; padding: 32px; max-width: 1000px; }
+  .page.active { display: block; }
+
+  /* ── TOP BAR ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .page-header .subtitle {
+    font-size: 13.5px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+  .stress-banner {
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.2);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #ffb3b3;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .stress-banner .emoji { font-size: 16px; flex-shrink: 0; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .card p { color: var(--text2); font-size: 13.5px; line-height: 1.7; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .stat-card .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── CODE BLOCKS ── */
+  pre, code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .code-block {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 12px 0;
+    position: relative;
+  }
+  .code-block .lang-tag {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .code-block code { color: #a9d9a9; display: block; }
+  .code-block .c-k { color: #c792ea; }
+  .code-block .c-s { color: #f7ac50; }
+  .code-block .c-n { color: #82aaff; }
+  .code-block .c-c { color: #546e7a; font-style: italic; }
+  .code-block .c-b { color: #00e5a0; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    background: var(--surface2);
+    padding: 4px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--surface3); }
+  .tab-btn.active { background: var(--accent); color: #000; font-weight: 600; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+  }
+  .badge-get { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .badge-post { background: rgba(255,166,0,0.15); color: #ffa600; }
+  .badge-put { background: rgba(0,188,212,0.15); color: var(--accent2); }
+  .badge-delete { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .badge-patch { background: rgba(155,93,229,0.15); color: #9b5de5; }
+  .badge-200 { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .badge-201 { background: rgba(0,188,212,0.15); color: var(--accent2); }
+  .badge-400 { background: rgba(255,166,0,0.15); color: #ffa600; }
+  .badge-401 { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .badge-404 { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .badge-500 { background: rgba(155,93,229,0.15); color: #9b5de5; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #00c88a; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface3); color: var(--text); border: 1px solid var(--border2); }
+  .btn-secondary:hover { background: var(--surface2); }
+  .btn-danger { background: var(--accent3); color: #fff; }
+  .btn-danger:hover { background: #e55a5a; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* ── API TESTER ── */
+  .api-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .api-row:hover { border-color: var(--border2); }
+  .api-row .api-name { font-size: 13px; font-weight: 500; flex: 1; min-width: 120px; }
+  .api-row .api-path { font-family: var(--mono); font-size: 12px; color: var(--text2); flex: 2; min-width: 150px; }
+
+  .response-panel {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-top: 12px;
+    min-height: 80px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #a9d9a9;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .status-bar {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .status-bar .s-item { display: flex; align-items: center; gap: 5px; color: var(--text2); }
+  .status-bar .s-value { font-weight: 600; }
+  .status-ok { color: var(--accent); }
+  .status-err { color: var(--accent3); }
+
+  /* ── PLAYGROUND ── */
+  .playground {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .playground-header {
+    background: var(--surface2);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .playground-header .ph-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+  .playground-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 220px;
+  }
+  @media (max-width: 700px) { .playground-body { grid-template-columns: 1fr; } }
+  .pg-editor, .pg-output {
+    padding: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .pg-editor { border-right: 1px solid var(--border); }
+  .pg-editor label, .pg-output label {
+    display: block;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: var(--sans);
+  }
+  .pg-editor textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #c792ea;
+    font-family: var(--mono);
+    font-size: 12px;
+    resize: vertical;
+    min-height: 160px;
+    outline: none;
+    line-height: 1.7;
+  }
+  .pg-output .pg-result {
+    color: #a9d9a9;
+    white-space: pre-wrap;
+    font-size: 12px;
+    min-height: 160px;
+  }
+  .pg-result .pass { color: var(--accent); }
+  .pg-result .fail { color: var(--accent3); }
+  .playground-footer {
+    border-top: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 36px;
+    bottom: -20px;
+    width: 1px;
+    background: var(--border);
+  }
+  .step:last-child::before { display: none; }
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .step-num.done { background: rgba(0,229,160,0.15); border-color: var(--accent); }
+  .step-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+  .step-content p { font-size: 13px; color: var(--text2); }
+
+  /* ── HINT BOX ── */
+  .hint-box {
+    background: rgba(0,188,212,0.07);
+    border: 1px solid rgba(0,188,212,0.2);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: #80deea;
+  }
+  .hint-box .hint-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .hint-toggle {
+    cursor: pointer;
+    user-select: none;
+  }
+  .hint-toggle:hover { opacity: 0.8; }
+  .hint-content { display: none; margin-top: 8px; }
+  .hint-content.visible { display: block; }
+
+  /* ── ISSUE TRACKER ── */
+  .issue-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .issue-item:hover { border-color: var(--border2); }
+  .issue-title { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+  .issue-meta { display: flex; gap: 10px; font-size: 11.5px; color: var(--text3); flex-wrap: wrap; }
+  .issue-tag {
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-bug { background: rgba(255,107,107,0.15); color: #ff9090; }
+  .tag-open { background: rgba(0,229,160,0.1); color: var(--accent); }
+  .tag-closed { background: rgba(90,95,120,0.3); color: var(--text3); }
+  .tag-critical { background: rgba(255,107,107,0.2); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); }
+  .tag-medium { background: rgba(255,166,0,0.15); color: #ffa600; }
+  .tag-low { background: rgba(0,188,212,0.1); color: var(--accent2); }
+
+  /* ── FORM ELEMENTS ── */
+  input[type="text"], input[type="email"], input[type="password"], select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 9px 12px;
+    width: 100%;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  label.form-label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; font-weight: 500; }
+  .form-group { margin-bottom: 14px; }
+  select option { background: var(--surface2); }
+
+  /* ── TASK CHECKLIST ── */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    transition: all 0.15s;
+  }
+  .task-item.completed { opacity: 0.6; border-color: rgba(0,229,160,0.2); }
+  .task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border2);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    margin-top: 1px;
+    background: transparent;
+  }
+  .task-check.checked { background: var(--accent); border-color: var(--accent); }
+  .task-check.checked::after { content: '✓'; color: #000; font-size: 11px; font-weight: 700; }
+  .task-body { flex: 1; }
+  .task-body h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 3px; }
+  .task-body p { font-size: 12.5px; color: var(--text2); }
+  .task-points {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── TERMINAL ── */
+  .terminal {
+    background: #050708;
+    border-radius: var(--radius);
+    border: 1px solid #1e2230;
+    overflow: hidden;
+  }
+  .terminal-bar {
+    background: #141720;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid #1e2230;
+  }
+  .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .t-dot.r { background: #ff5f56; }
+  .t-dot.y { background: #ffbd2e; }
+  .t-dot.g { background: #27c93f; }
+  .terminal-title { font-size: 11px; color: #5a5f78; margin-left: 4px; letter-spacing: 0.5px; }
+  .terminal-body {
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    min-height: 100px;
+  }
+  .t-prompt { color: var(--accent); }
+  .t-cmd { color: #e8eaf0; }
+  .t-output { color: var(--text2); }
+  .t-success { color: var(--accent); }
+  .t-error { color: var(--accent3); }
+  .t-running { color: var(--accent4); }
+
+  /* ── NEWMAN SIM ── */
+  .newman-log { list-style: none; }
+  .newman-log li {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 2px 0;
+    color: var(--text2);
+  }
+  .newman-log .nl-pass { color: var(--accent); }
+  .newman-log .nl-fail { color: var(--accent3); }
+  .newman-log .nl-info { color: var(--accent2); }
+  .newman-log .nl-sum { color: var(--accent4); font-weight: 600; }
+
+  /* ── SECURITY ── */
+  .vuln-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .vuln-card.critical { border-left-color: var(--accent3); }
+  .vuln-card.high { border-left-color: #ffa600; }
+  .vuln-card.medium { border-left-color: var(--accent4); }
+  .vuln-card .vuln-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .vuln-card .vuln-desc { font-size: 12.5px; color: var(--text2); margin-bottom: 10px; }
+
+  /* ── CHEATSHEET ── */
+  .cheat-section { margin-bottom: 24px; }
+  .cheat-section h3 {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cheat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 13px;
+  }
+  .cheat-item code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cheat-item .cheat-desc { color: var(--text2); font-size: 12.5px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+  .modal-close {
+    float: right;
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 20px;
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* ── COMPARISON ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card {
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .compare-bad { background: rgba(255,107,107,0.07); border: 1px solid rgba(255,107,107,0.2); }
+  .compare-good { background: rgba(0,229,160,0.05); border: 1px solid rgba(0,229,160,0.15); }
+  .compare-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .compare-bad .compare-label { color: var(--accent3); }
+  .compare-good .compare-label { color: var(--accent); }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text);
+    max-width: 300px;
+    animation: toastIn 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.success { border-left: 3px solid var(--accent); }
+  .toast.error { border-left: 3px solid var(--accent3); }
+  .toast.info { border-left: 3px solid var(--accent2); }
+  @keyframes toastIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin: 24px 0 12px;
+  }
+  .inline-code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent);
+    border: 1px solid var(--border);
+  }
+  .highlight { color: var(--accent); font-weight: 600; }
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+
+  /* ── MOBILE ── */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 12px; left: 12px;
+    z-index: 150;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  @media (max-width: 768px) {
+    .hamburger { display: block; }
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; }
+    .page { padding: 20px 16px; }
+    .playground-body { grid-template-columns: 1fr; }
+    .pg-editor { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  .xp-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: auto;
+  }
+  .xp-bar .xp-num { color: var(--accent4); font-weight: 700; font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">SQA BOOT</div>
+    <h2>Junior QA Engineer<br/>Training Platform</h2>
+    <p>Your path to job-ready skills</p>
+  </div>
+  <div class="sidebar-progress-wrap">
+    <div class="sidebar-progress-label">OVERALL PROGRESS</div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="overall-progress" style="width:0%"></div>
+    </div>
+    <div class="progress-pct" id="overall-pct">0% complete</div>
+  </div>
+  <nav>
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">⬡</span> Dashboard
+    </div>
+    <div class="nav-section-label">Core Skills</div>
+    <div class="nav-item" onclick="showPage('api-intro')">
+      <span class="nav-icon">⚡</span> API Basics
+    </div>
+    <div class="nav-item" onclick="showPage('postman')">
+      <span class="nav-icon">📬</span> Postman
+      <span class="nav-badge" id="badge-postman">KEY</span>
+    </div>
+    <div class="nav-item" onclick="showPage('tester')">
+      <span class="nav-icon">🧪</span> Live API Tester
+    </div>
+    <div class="nav-item" onclick="showPage('scripts')">
+      <span class="nav-icon">✍️</span> Test Scripts
+    </div>
+    <div class="nav-item" onclick="showPage('newman')">
+      <span class="nav-icon">▶</span> Newman CLI
+    </div>
+    <div class="nav-section-label">Other Skills</div>
+    <div class="nav-item" onclick="showPage('github')">
+      <span class="nav-icon">🐛</span> GitHub Issues
+    </div>
+    <div class="nav-item" onclick="showPage('security')">
+      <span class="nav-icon">🔒</span> Security (VAPT)
+    </div>
+    <div class="nav-section-label">Resources</div>
+    <div class="nav-item" onclick="showPage('tasks')">
+      <span class="nav-icon">✅</span> Daily Tasks
+    </div>
+    <div class="nav-item" onclick="showPage('cheatsheet')">
+      <span class="nav-icon">📋</span> Cheatsheets
+    </div>
+  </nav>
+  <div class="xp-bar">
+    <span>⭐ XP:</span>
+    <span class="xp-num" id="xp-display">0</span>
+    <span>/ 1000</span>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <h1>Welcome Back! 👋</h1>
+        <p class="subtitle">Your SQA learning journey — track progress, stay on track.</p>
+      </div>
+    </div>
+    <div class="stress-banner">
+      <span class="emoji">🫁</span>
+      <span><strong>Feeling overwhelmed?</strong> That's completely normal in week 1. This platform is designed to take you from zero to job-ready, one bite at a time. Focus on one section per day. You've got this.</span>
+    </div>
+    <div class="card-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-tasks">0</div>
+        <div class="stat-label">Tasks Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-tests">0</div>
+        <div class="stat-label">API Tests Run</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-issues">0</div>
+        <div class="stat-label">Issues Reported</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-xp">0</div>
+        <div class="stat-label">XP Earned</div>
+      </div>
+    </div>
+
+    <div class="section-title">Your Learning Path</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num done">1</div>
+        <div class="step-content">
+          <h4>Understand What API Testing Is</h4>
+          <p>Learn what APIs are, why we test them, and what tools QA engineers use.</p>
+          <div style="margin-top:8px;"><button class="btn btn-primary btn-sm" onclick="showPage('api-intro')">Start Here →</button></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Postman Fundamentals</h4>
+          <p>Learn collections, requests, and environments in Postman.</p>
+          <div style="margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="showPage('postman')">Go to Postman →</button></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Run Live API Tests</h4>
+          <p>Test real mock APIs — login, users, products — right here in the browser.</p>
+          <div style="margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="showPage('tester')">Open Tester →</button></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Write Postman Test Scripts</h4>
+          <p>Learn to write <code>pm.test()</code> scripts to validate API responses automatically.</p>
+          <div style="margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="showPage('scripts')">Learn Scripts →</button></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Newman CLI — Run Collections Automatically</h4>
+          <p>Export collections and run them from the command line to automate testing.</p>
+          <div style="margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="showPage('newman')">Newman →</button></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h4>Report Bugs on GitHub</h4>
+          <p>Learn to write clear, professional bug reports that developers will actually act on.</p>
+          <div style="margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="showPage('github')">GitHub Issues →</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="card">
+      <h3>💡 Today's Quick Tip</h3>
+      <p id="daily-tip">Every time you test an API, ask yourself three questions: <span class="highlight">(1) What should happen?</span> <span class="highlight">(2) What actually happened?</span> <span class="highlight">(3) How do I prove it?</span> That's the mindset of a QA engineer.</p>
+    </div>
+  </div>
+
+  <!-- ============ API INTRO ============ -->
+  <div class="page" id="page-api-intro">
+    <div class="page-header">
+      <div><h1>⚡ API Basics</h1><p class="subtitle">What is an API? Why do we test it? How does it work?</p></div>
+    </div>
+
+    <div class="card">
+      <h3>🤔 What is an API? (Simple Explanation)</h3>
+      <p>Imagine you're at a restaurant. You don't go into the kitchen yourself — you give your order to the <strong style="color:var(--accent)">waiter</strong>. The waiter takes your request to the kitchen and brings back food.</p>
+      <p style="margin-top:10px;"><strong style="color:var(--accent2)">An API is the waiter.</strong> It takes your request (from an app or browser), sends it to the server (kitchen), and brings back the response (food).</p>
+      <p style="margin-top:10px;">In healthcare or insurance software: when a doctor searches for a patient's history, an API call is being made to a database. When a claim is submitted, an API sends that data. <strong style="color:var(--accent)">Everything is APIs.</strong></p>
+    </div>
+
+    <div class="section-title">HTTP Methods — The Types of Requests</div>
+    <div class="card">
+      <p style="margin-bottom:14px;">Every API request uses a <strong>method</strong> that tells the server what to do:</p>
+      <div class="cheat-item" style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <code><span class="badge badge-get">GET</span></code>
+        <div class="cheat-desc"><strong>Fetch / Read data.</strong> Example: "Give me patient #1234's records." No body needed. Safe — doesn't change anything.</div>
+      </div>
+      <div class="cheat-item" style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <code><span class="badge badge-post">POST</span></code>
+        <div class="cheat-desc"><strong>Create new data.</strong> Example: "Create a new insurance claim." Sends data in the request body.</div>
+      </div>
+      <div class="cheat-item" style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <code><span class="badge badge-put">PUT</span></code>
+        <div class="cheat-desc"><strong>Update/replace existing data.</strong> Example: "Update the entire user profile." Replaces the whole record.</div>
+      </div>
+      <div class="cheat-item" style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <code><span class="badge badge-patch">PATCH</span></code>
+        <div class="cheat-desc"><strong>Partial update.</strong> Example: "Only update the email address." More efficient than PUT.</div>
+      </div>
+      <div class="cheat-item" style="padding:10px 0;">
+        <code><span class="badge badge-delete">DELETE</span></code>
+        <div class="cheat-desc"><strong>Delete data.</strong> Example: "Remove user account #5." Careful — this is destructive!</div>
+      </div>
+    </div>
+
+    <div class="section-title">Status Codes — What Does the Response Mean?</div>
+    <div class="card">
+      <p style="margin-bottom:14px;">After you send a request, the server replies with a <strong>status code</strong>. Think of it like a reaction:</p>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        <div class="stat-card"><div class="stat-num" style="font-size:22px;"><span class="badge badge-200">200 OK</span></div><div class="stat-label" style="margin-top:8px;">Success! Everything worked.</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:22px;"><span class="badge badge-201">201 Created</span></div><div class="stat-label" style="margin-top:8px;">New record was created.</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:22px;"><span class="badge badge-400">400 Bad Request</span></div><div class="stat-label" style="margin-top:8px;">You sent bad/missing data.</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:22px;"><span class="badge badge-401">401 Unauthorized</span></div><div class="stat-label" style="margin-top:8px;">Not logged in / bad token.</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:22px;"><span class="badge badge-404">404 Not Found</span></div><div class="stat-label" style="margin-top:8px;">Resource doesn't exist.</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:22px;"><span class="badge badge-500">500 Server Error</span></div><div class="stat-label" style="margin-top:8px;">The server crashed/broke.</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">What Does a Real API Request Look Like?</div>
+    <div class="card">
+      <p style="margin-bottom:12px;">Here's a real API request to get a user's profile:</p>
+      <div class="code-block">
+        <span class="lang-tag">HTTP REQUEST</span>
+        <code>GET /api/users/42 HTTP/1.1
+Host: api.healthclaim.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+Content-Type: application/json</code>
+      </div>
+      <p style="margin:12px 0 8px;">And the response the server sends back:</p>
+      <div class="code-block">
+        <span class="lang-tag">HTTP RESPONSE</span>
+        <code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "id": 42,
+  "name": "Rahima Begum",
+  "email": "rahima@healthco.com",
+  "role": "patient",
+  "claimCount": 3,
+  "active": true
+}</code>
+      </div>
+      <div class="hint-box">
+        <div class="hint-label">✅ As a QA engineer, you'd verify:</div>
+        Status code is 200 · Response has "id", "name", "email" fields · "active" is boolean (true/false) · Response time is under 2000ms
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ POSTMAN ============ -->
+  <div class="page" id="page-postman">
+    <div class="page-header">
+      <div><h1>📬 Postman Fundamentals</h1><p class="subtitle">The #1 tool for API testing — learn it properly.</p></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'pm-what')">What is Postman?</button>
+      <button class="tab-btn" onclick="switchTab(this, 'pm-collections')">Collections</button>
+      <button class="tab-btn" onclick="switchTab(this, 'pm-requests')">Building Requests</button>
+      <button class="tab-btn" onclick="switchTab(this, 'pm-env')">Environments</button>
+      <button class="tab-btn" onclick="switchTab(this, 'pm-workflow')">Real Workflow</button>
+    </div>
+
+    <div class="tab-pane active" id="pm-what">
+      <div class="card">
+        <h3>What is Postman?</h3>
+        <p>Postman is a <strong style="color:var(--accent)">GUI (graphical) tool</strong> that lets you send API requests and see responses — without writing any code. Think of it as a browser, but for APIs.</p>
+        <p style="margin-top:10px;">As a QA engineer, you'll use Postman to:</p>
+        <ul style="margin-top:8px;color:var(--text2);font-size:13.5px;padding-left:18px;line-height:2;">
+          <li>Send GET, POST, PUT, DELETE requests manually</li>
+          <li>Add headers like <span class="inline-code">Authorization</span> or <span class="inline-code">Content-Type</span></li>
+          <li>Send JSON bodies for POST/PUT requests</li>
+          <li>Write test scripts that automatically validate responses</li>
+          <li>Organize related API tests into <strong>Collections</strong></li>
+          <li>Export Collections to run with Newman (automated)</li>
+        </ul>
+      </div>
+      <div class="card" style="background:var(--surface2);">
+        <h3>Postman Interface — Key Areas</h3>
+        <div class="steps" style="margin-top:12px;">
+          <div class="step"><div class="step-num" style="font-size:11px;font-weight:700;">A</div><div class="step-content"><h4>Collections Panel (Left)</h4><p>Like a folder — organizes all your API requests by feature or project.</p></div></div>
+          <div class="step"><div class="step-num" style="font-size:11px;font-weight:700;">B</div><div class="step-content"><h4>Request Builder (Top Centre)</h4><p>Where you pick the method (GET/POST), type the URL, add headers and body.</p></div></div>
+          <div class="step"><div class="step-num" style="font-size:11px;font-weight:700;">C</div><div class="step-content"><h4>Response Panel (Bottom)</h4><p>Shows status code, response time, body, and test results after you click Send.</p></div></div>
+          <div class="step"><div class="step-num" style="font-size:11px;font-weight:700;">D</div><div class="step-content"><h4>Tests Tab (in Request)</h4><p>Where you write JavaScript test scripts like <span class="inline-code">pm.test(...)</span>.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="pm-collections">
+      <div class="card">
+        <h3>What is a Collection?</h3>
+        <p>A Collection is a <strong style="color:var(--accent)">folder that groups related API requests</strong>. Instead of rebuilding requests every time, you save them into a Collection and run them whenever you need.</p>
+        <p style="margin-top:10px;">Example structure for a healthcare app:</p>
+      </div>
+      <div class="code-block">
+        <span class="lang-tag">COLLECTION STRUCTURE</span>
+        <code>📁 HealthClaim API Tests
+  📁 Authentication
+    📄 POST /auth/login          ← Get token
+    📄 POST /auth/logout         ← End session
+    📄 POST /auth/refresh        ← Refresh expired token
+  📁 Patients
+    📄 GET  /patients            ← List all patients
+    📄 GET  /patients/:id        ← Get specific patient
+    📄 POST /patients            ← Create new patient
+    📄 PUT  /patients/:id        ← Update patient data
+  📁 Claims
+    📄 GET  /claims              ← List claims
+    📄 POST /claims              ← Submit new claim
+    📄 GET  /claims/:id/status   ← Check claim status
+  📁 Negative Tests
+    📄 GET  /patients/99999      ← Should return 404
+    📄 POST /auth/login (bad pw) ← Should return 401</code>
+      </div>
+      <div class="hint-box">
+        <div class="hint-label">💡 Pro tip</div>
+        Always include <strong>negative test cases</strong> — tests that send bad data. This is where real bugs hide!
+      </div>
+    </div>
+
+    <div class="tab-pane" id="pm-requests">
+      <div class="card">
+        <h3>Building a POST Request — Step by Step</h3>
+        <div class="steps" style="margin-top:14px;">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Set the Method and URL</h4>
+              <p>Click the dropdown (default: GET) and select <strong>POST</strong>. Enter the URL:</p>
+              <div class="code-block"><code>POST  https://api.healthclaim.com/auth/login</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Add Headers</h4>
+              <p>Go to the <strong>Headers</strong> tab. Add:</p>
+              <div class="code-block"><code>Key: Content-Type
+Value: application/json</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Add the Request Body</h4>
+              <p>Go to the <strong>Body</strong> tab → select <strong>raw</strong> → select <strong>JSON</strong>. Type:</p>
+              <div class="code-block"><span class="lang-tag">JSON</span><code>{
+  "username": "dr.ahmed@clinic.com",
+  "password": "SecurePass123"
+}</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h4>Click Send and Check Response</h4>
+              <p>A successful login should return <span class="badge badge-200">200 OK</span> with a token in the body.</p>
+              <div class="code-block"><span class="lang-tag">EXPECTED RESPONSE</span><code>{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "expiresIn": 3600,
+  "user": { "id": 7, "role": "doctor" }
+}</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <h4>Save to Collection</h4>
+              <p>Click <strong>Save</strong> → name it "Login — Valid Credentials" → save to your collection folder.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="pm-env">
+      <div class="card">
+        <h3>Environments — Stop Hardcoding URLs!</h3>
+        <p>Environments let you store values (like base URLs and tokens) as <strong>variables</strong> so you can switch between development, staging, and production with one click.</p>
+      </div>
+      <div class="code-block">
+        <span class="lang-tag">ENVIRONMENT: DEV</span>
+        <code>Variable          Value
+─────────────────────────────────────────
+baseUrl           http://localhost:3000
+authToken         (empty — set after login)
+patientId         42
+
+Usage in Postman:  {{baseUrl}}/api/patients/{{patientId}}</code>
+      </div>
+      <div class="code-block">
+        <span class="lang-tag">ENVIRONMENT: STAGING</span>
+        <code>Variable          Value
+─────────────────────────────────────────
+baseUrl           https://staging-api.healthclaim.com
+authToken         (empty — set after login)
+patientId         42</code>
+      </div>
+      <div class="hint-box">
+        <div class="hint-label">💡 Auto-save tokens using pre-request scripts</div>
+        <div>After login, save the token automatically:</div>
+        <div class="code-block" style="margin-top:8px;"><code><span class="c-c">// In Tests tab of your Login request:</span>
+<span class="c-k">var</span> json = pm.response.json();
+pm.environment.set(<span class="c-s">"authToken"</span>, json.token);
+<span class="c-c">// Now {{authToken}} is available everywhere!</span></code></div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="pm-workflow">
+      <div class="card">
+        <h3>Daily QA Workflow with Postman</h3>
+        <div class="steps" style="margin-top:14px;">
+          <div class="step"><div class="step-num done">1</div><div class="step-content"><h4>Morning: Check the Test Environment</h4><p>Make sure the staging server is running. Send a health check GET request: <span class="inline-code">GET /health</span> → should return 200.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Run the Smoke Test Collection</h4><p>Run your full Collection in Postman Collection Runner. All critical APIs should pass. If any fail, investigate immediately.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Test New Features</h4><p>When a dev says "Feature X is done," test the relevant API endpoints. Try happy path (valid data) AND sad path (invalid data).</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><h4>Document and Report Bugs</h4><p>Any failures? Screenshot the Postman response, note the expected vs actual, and create a GitHub Issue (we'll learn this next).</p></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content"><h4>End of Day: Export Collection</h4><p>Export your updated collection as JSON and commit it to the project repo so the team has the latest tests.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LIVE API TESTER ============ -->
+  <div class="page" id="page-tester">
+    <div class="page-header">
+      <div><h1>🧪 Live API Tester</h1><p class="subtitle">Test real mock APIs — practice right here in the browser.</p></div>
+    </div>
+
+    <div class="stress-banner">
+      <span class="emoji">🎯</span>
+      <span>These are <strong>simulated API endpoints</strong> that behave like real ones. Send requests, see responses, and practice validating them. This is what you'll do in Postman every day.</span>
+    </div>
+
+    <div class="section-title">Available Mock Endpoints</div>
+    <div class="api-row">
+      <span class="badge badge-post">POST</span>
+      <span class="api-name">Login</span>
+      <span class="api-path">/api/auth/login</span>
+      <button class="btn btn-primary btn-sm" onclick="openTester('login')">Test →</button>
+    </div>
+    <div class="api-row">
+      <span class="badge badge-get">GET</span>
+      <span class="api-name">Get All Users</span>
+      <span class="api-path">/api/users</span>
+      <button class="btn btn-primary btn-sm" onclick="openTester('users')">Test →</button>
+    </div>
+    <div class="api-row">
+      <span class="badge badge-get">GET</span>
+      <span class="api-name">Get User by ID</span>
+      <span class="api-path">/api/users/:id</span>
+      <button class="btn btn-primary btn-sm" onclick="openTester('user-by-id')">Test →</button>
+    </div>
+    <div class="api-row">
+      <span class="badge badge-post">POST</span>
+      <span class="api-name">Create Claim</span>
+      <span class="api-path">/api/claims</span>
+      <button class="btn btn-primary btn-sm" onclick="openTester('create-claim')">Test →</button>
+    </div>
+    <div class="api-row">
+      <span class="badge badge-put">PUT</span>
+      <span class="api-name">Update Claim Status</span>
+      <span class="api-path">/api/claims/:id/status</span>
+      <button class="btn btn-primary btn-sm" onclick="openTester('update-claim')">Test →</button>
+    </div>
+    <div class="api-row">
+      <span class="badge badge-delete">DELETE</span>
+      <span class="api-name">Delete User</span>
+      <span class="api-path">/api/users/:id</span>
+      <button class="btn btn-danger btn-sm" onclick="openTester('delete-user')">Test →</button>
+    </div>
+
+    <div id="tester-panel" style="display:none;margin-top:20px;">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+          <span id="tp-method" class="badge badge-get">GET</span>
+          <code id="tp-url" style="font-family:var(--mono);font-size:13px;color:var(--accent2);flex:1;"></code>
+        </div>
+        <div id="tp-body-section" style="display:none;margin-bottom:14px;">
+          <label class="form-label">Request Body (JSON)</label>
+          <textarea id="tp-body" rows="5" style="font-family:var(--mono);font-size:12px;"></textarea>
+        </div>
+        <div id="tp-param-section" style="display:none;margin-bottom:14px;">
+          <label class="form-label">Path Parameter (ID)</label>
+          <input type="text" id="tp-param" placeholder="e.g. 1, 2, 3 (try 999 for 404)" style="max-width:200px;"/>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="sendMockRequest()">▶ Send Request</button>
+          <button class="btn btn-secondary" onclick="clearResponse()">Clear</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:0;">
+        <h3 style="margin-bottom:8px;">Response</h3>
+        <div class="status-bar" id="tp-status-bar" style="margin-bottom:10px;display:none;">
+          <div class="s-item">Status: <span class="s-value" id="tp-status-code">—</span></div>
+          <div class="s-item">Time: <span class="s-value" id="tp-time">—</span></div>
+          <div class="s-item">Size: <span class="s-value" id="tp-size">—</span></div>
+        </div>
+        <div class="response-panel" id="tp-response">→ Response will appear here after you click Send Request</div>
+        <div id="tp-tests-result" style="margin-top:12px;display:none;">
+          <div class="section-title" style="margin-top:0;">Auto-Validation Results</div>
+          <ul id="tp-tests-list" style="list-style:none;font-size:13px;"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TEST SCRIPTS ============ -->
+  <div class="page" id="page-scripts">
+    <div class="page-header">
+      <div><h1>✍️ Test Script Practice</h1><p class="subtitle">Write Postman test scripts — the most in-demand skill.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>What are Test Scripts?</h3>
+      <p>In Postman's <strong>Tests tab</strong>, you write JavaScript that automatically checks if the API responded correctly. Instead of manually looking at every response, your script does it for you — and flags failures instantly.</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'sc-basic')">Status Codes</button>
+      <button class="tab-btn" onclick="switchTab(this, 'sc-body')">Body Validation</button>
+      <button class="tab-btn" onclick="switchTab(this, 'sc-headers')">Headers</button>
+      <button class="tab-btn" onclick="switchTab(this, 'sc-time')">Performance</button>
+      <button class="tab-btn" onclick="switchTab(this, 'sc-chain')">Chaining Requests</button>
+      <button class="tab-btn active-special" onclick="switchTab(this, 'sc-playground')">🎮 Playground</button>
+    </div>
+
+    <div class="tab-pane active" id="sc-basic">
+      <div class="card">
+        <h3>Checking Status Codes</h3>
+        <p style="margin-bottom:12px;">The most basic (and important) test — did the API return the right status?</p>
+        <div class="code-block">
+          <span class="lang-tag">POSTMAN JS</span>
+          <code><span class="c-c">// Test 1: Check status is 200</span>
+pm.test(<span class="c-s">"Status code is 200"</span>, <span class="c-k">function</span>() {
+    pm.response.to.have.status(<span class="c-n">200</span>);
+});
+
+<span class="c-c">// Test 2: Check it's NOT 500 (server error)</span>
+pm.test(<span class="c-s">"No server error"</span>, <span class="c-k">function</span>() {
+    pm.expect(pm.response.code).to.be.below(<span class="c-n">500</span>);
+});
+
+<span class="c-c">// Test 3: One of multiple valid status codes</span>
+pm.test(<span class="c-s">"Status is 200 or 201"</span>, <span class="c-k">function</span>() {
+    pm.expect(pm.response.code).to.be.oneOf([<span class="c-n">200</span>, <span class="c-n">201</span>]);
+});</code>
+        </div>
+        <div class="hint-box">
+          <div class="hint-label">🧠 Remember</div>
+          For a LOGIN endpoint: <strong>valid credentials → 200</strong>. For a CREATE endpoint: <strong>success → 201</strong>. For DELETE: <strong>success → 204</strong> (no content). Always check the API documentation to know what's expected!
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="sc-body">
+      <div class="card">
+        <h3>Validating Response Body</h3>
+        <p style="margin-bottom:12px;">Check that the data in the response is correct — right fields, right values, right types.</p>
+        <div class="code-block">
+          <span class="lang-tag">POSTMAN JS</span>
+          <code><span class="c-c">// Parse the JSON response body</span>
+<span class="c-k">var</span> json = pm.response.json();
+
+<span class="c-c">// Test: Check field exists</span>
+pm.test(<span class="c-s">"Response has token field"</span>, <span class="c-k">function</span>() {
+    pm.expect(json).to.have.property(<span class="c-s">"token"</span>);
+});
+
+<span class="c-c">// Test: Check field is not empty</span>
+pm.test(<span class="c-s">"Token is not empty"</span>, <span class="c-k">function</span>() {
+    pm.expect(json.token).to.not.be.empty;
+});
+
+<span class="c-c">// Test: Check a specific value</span>
+pm.test(<span class="c-s">"User role is doctor"</span>, <span class="c-k">function</span>() {
+    pm.expect(json.user.role).to.equal(<span class="c-s">"doctor"</span>);
+});
+
+<span class="c-c">// Test: Check a number is positive</span>
+pm.test(<span class="c-s">"User ID is a positive number"</span>, <span class="c-k">function</span>() {
+    pm.expect(json.user.id).to.be.above(<span class="c-n">0</span>);
+});
+
+<span class="c-c">// Test: Check array has items</span>
+pm.test(<span class="c-s">"Users list is not empty"</span>, <span class="c-k">function</span>() {
+    pm.expect(json.users).to.be.an(<span class="c-s">"array"</span>).and.not.empty;
+});</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="sc-headers">
+      <div class="card">
+        <h3>Checking Response Headers</h3>
+        <p style="margin-bottom:12px;">Headers tell you about the response format, security, and caching. Important for security testing!</p>
+        <div class="code-block">
+          <span class="lang-tag">POSTMAN JS</span>
+          <code><span class="c-c">// Check Content-Type is JSON</span>
+pm.test(<span class="c-s">"Content-Type is JSON"</span>, <span class="c-k">function</span>() {
+    pm.expect(pm.response.headers.get(<span class="c-s">"Content-Type"</span>))
+        .to.include(<span class="c-s">"application/json"</span>);
+});
+
+<span class="c-c">// Security: Check security headers are present</span>
+pm.test(<span class="c-s">"X-Content-Type-Options header present"</span>, <span class="c-k">function</span>() {
+    pm.response.to.have.header(<span class="c-s">"X-Content-Type-Options"</span>);
+});
+
+pm.test(<span class="c-s">"No server version exposed"</span>, <span class="c-k">function</span>() {
+    <span class="c-c">// Server header should not reveal tech stack</span>
+    <span class="c-k">var</span> server = pm.response.headers.get(<span class="c-s">"Server"</span>);
+    pm.expect(server).to.not.include(<span class="c-s">"Apache/2.4"</span>);
+});</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="sc-time">
+      <div class="card">
+        <h3>Performance Testing</h3>
+        <p style="margin-bottom:12px;">APIs should respond within acceptable time limits. If they're slow, it's a bug!</p>
+        <div class="code-block">
+          <span class="lang-tag">POSTMAN JS</span>
+          <code><span class="c-c">// Test: Response within 2 seconds</span>
+pm.test(<span class="c-s">"Response time under 2000ms"</span>, <span class="c-k">function</span>() {
+    pm.expect(pm.response.responseTime).to.be.below(<span class="c-n">2000</span>);
+});
+
+<span class="c-c">// Strict: Critical APIs should be fast</span>
+pm.test(<span class="c-s">"Login API responds in under 500ms"</span>, <span class="c-k">function</span>() {
+    pm.expect(pm.response.responseTime).to.be.below(<span class="c-n">500</span>);
+});
+
+<span class="c-c">// Warning level — log if slow but don't fail</span>
+<span class="c-k">if</span> (pm.response.responseTime > <span class="c-n">1000</span>) {
+    console.warn(<span class="c-s">"⚠️ API is slow: "</span> + pm.response.responseTime + <span class="c-s">"ms"</span>);
+}</code>
+        </div>
+        <div class="hint-box">
+          <div class="hint-label">⏱ Common time limits</div>
+          Login/Auth: &lt;500ms · List endpoints: &lt;1000ms · Reports/Complex: &lt;3000ms · File uploads: &lt;5000ms
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="sc-chain">
+      <div class="card">
+        <h3>Chaining Requests — Saving Data Between Requests</h3>
+        <p style="margin-bottom:12px;">Real-world testing requires you to: <strong>Login → Get Token → Use Token in next request</strong>. Here's how:</p>
+        <div class="code-block">
+          <span class="lang-tag">REQUEST 1: LOGIN — Tests Tab</span>
+          <code><span class="c-c">// After login succeeds, save the token:</span>
+pm.test(<span class="c-s">"Login successful"</span>, <span class="c-k">function</span>() {
+    pm.response.to.have.status(<span class="c-n">200</span>);
+    <span class="c-k">var</span> json = pm.response.json();
+    
+    <span class="c-c">// Save token to environment variable</span>
+    pm.environment.set(<span class="c-s">"authToken"</span>, json.token);
+    pm.environment.set(<span class="c-s">"userId"</span>, json.user.id);
+    
+    console.log(<span class="c-s">"✅ Token saved successfully"</span>);
+});</code>
+        </div>
+        <div class="code-block">
+          <span class="lang-tag">REQUEST 2: GET USER — Headers Tab</span>
+          <code><span class="c-c">// In the Authorization header of the next request:</span>
+Key:   Authorization
+Value: Bearer {{authToken}}   <span class="c-c">← Uses the saved token!</span>
+
+<span class="c-c">// In Tests tab, validate the user we got back:</span>
+pm.test(<span class="c-s">"Got correct user"</span>, <span class="c-k">function</span>() {
+    <span class="c-k">var</span> json = pm.response.json();
+    pm.expect(json.id).to.equal(pm.environment.get(<span class="c-s">"userId"</span>));
+});</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="sc-playground">
+      <div class="card" style="margin-bottom:12px;">
+        <h3>🎮 Interactive Script Playground</h3>
+        <p>Write your own Postman test scripts and see what they'd output. Edit the code below and click Run.</p>
+      </div>
+      <div class="playground">
+        <div class="playground-header">
+          <span class="ph-dot" style="background:#ff5f56;"></span>
+          <span class="ph-dot" style="background:#ffbd2e;"></span>
+          <span class="ph-dot" style="background:#27c93f;"></span>
+          <span style="font-size:12px;color:var(--text2);margin-left:8px;">Postman Test Script Editor</span>
+        </div>
+        <div class="playground-body">
+          <div class="pg-editor">
+            <label>Your Script (Edit me!)</label>
+            <textarea id="script-editor">// Sample API response (what Postman receives):
+var responseData = {
+  "status": "success",
+  "user": {
+    "id": 42,
+    "name": "Dr. Ahmed Khan",
+    "role": "doctor",
+    "active": true
+  },
+  "token": "eyJhbGc.abc123.xyz",
+  "expiresIn": 3600
+};
+
+var responseTime = 245; // milliseconds
+var statusCode = 200;
+
+// ─── YOUR TESTS (Simulated pm.test) ───
+// Try modifying these!
+
+pmTest("Status is 200", function() {
+  expect(statusCode).toBe(200);
+});
+
+pmTest("Response has token", function() {
+  expect(responseData).toHaveProperty("token");
+});
+
+pmTest("Token is not empty", function() {
+  expect(responseData.token.length).toBeGreaterThan(0);
+});
+
+pmTest("User ID is positive", function() {
+  expect(responseData.user.id).toBeGreaterThan(0);
+});
+
+pmTest("Response time under 1000ms", function() {
+  expect(responseTime).toBeLessThan(1000);
+});
+
+// Try adding your own test below!
+// pmTest("Your test", function() {
+//   expect(responseData.user.role).toBe("doctor");
+// });</textarea>
+          </div>
+          <div class="pg-output">
+            <label>Test Results</label>
+            <pre class="pg-result" id="script-output">← Click Run Tests to see results</pre>
+          </div>
+        </div>
+        <div class="playground-footer">
+          <button class="btn btn-primary" onclick="runScript()">▶ Run Tests</button>
+          <button class="btn btn-secondary" onclick="resetScript()">↺ Reset</button>
+          <span style="font-size:12px;color:var(--text3);margin-left:4px;">Edit the script above and run to see results</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NEWMAN ============ -->
+  <div class="page" id="page-newman">
+    <div class="page-header">
+      <div><h1>▶ Newman CLI</h1><p class="subtitle">Run your Postman collections from the command line — automation starts here.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>What is Newman?</h3>
+      <p>Newman is the <strong style="color:var(--accent)">command-line version of Postman</strong>. It runs your collections automatically without opening the Postman app. This is used in:</p>
+      <ul style="margin-top:8px;color:var(--text2);font-size:13.5px;padding-left:18px;line-height:2;">
+        <li><strong>CI/CD pipelines</strong> — runs tests automatically when developers push code</li>
+        <li><strong>Scheduled testing</strong> — runs every night to catch regressions</li>
+        <li><strong>Reporting</strong> — generates HTML/JSON reports to share with your team</li>
+      </ul>
+    </div>
+
+    <div class="section-title">Installation</div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span>
+        <span class="terminal-title">Terminal</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">npm install -g newman</span></div>
+        <div class="t-output">+ newman@6.0.0 added 147 packages</div>
+        <div style="margin-top:8px;"><span class="t-prompt">$ </span><span class="t-cmd">npm install -g newman-reporter-htmlextra</span></div>
+        <div class="t-output">+ newman-reporter-htmlextra@1.22.11</div>
+        <div style="margin-top:8px;"><span class="t-prompt">$ </span><span class="t-cmd">newman --version</span></div>
+        <div class="t-success">6.0.0</div>
+      </div>
+    </div>
+
+    <div class="section-title">Core Commands</div>
+    <div class="cheat-section">
+      <div class="cheat-item">
+        <code>newman run collection.json</code>
+        <span class="cheat-desc">Run a collection file</span>
+      </div>
+      <div class="cheat-item">
+        <code>newman run collection.json -e env.json</code>
+        <span class="cheat-desc">Run with an environment file</span>
+      </div>
+      <div class="cheat-item">
+        <code>newman run collection.json --reporters html</code>
+        <span class="cheat-desc">Generate an HTML report</span>
+      </div>
+      <div class="cheat-item">
+        <code>newman run collection.json -r htmlextra</code>
+        <span class="cheat-desc">Generate a fancy HTML report</span>
+      </div>
+      <div class="cheat-item">
+        <code>newman run collection.json --delay-request 500</code>
+        <span class="cheat-desc">Add 500ms delay between requests</span>
+      </div>
+      <div class="cheat-item">
+        <code>newman run collection.json -n 3</code>
+        <span class="cheat-desc">Run the collection 3 times (load testing)</span>
+      </div>
+    </div>
+
+    <div class="section-title">How to Export from Postman</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Select your Collection</h4><p>In Postman, right-click your collection in the left panel → click <strong>Export</strong></p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Choose Collection v2.1</h4><p>Select <strong>Collection v2.1 (Recommended)</strong> and click Export</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Save the file</h4><p>Save as <span class="inline-code">HealthClaim-Tests.postman_collection.json</span> in your project folder</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><h4>Also export your Environment</h4><p>Go to Environments → click <strong>⋯</strong> next to your environment → Export → save as <span class="inline-code">staging.postman_environment.json</span></p></div></div>
+    </div>
+
+    <div class="section-title">🎮 Simulate a Newman Run</div>
+    <div class="card">
+      <p style="margin-bottom:14px;">Click the button to simulate running your collection through Newman:</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="btn btn-primary" onclick="runNewmanSim()">▶ Run Newman Simulation</button>
+        <button class="btn btn-secondary" onclick="clearNewman()">Clear</button>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span>
+          <span class="terminal-title">newman run HealthClaim-Tests.postman_collection.json -e staging.json -r htmlextra</span>
+        </div>
+        <div class="terminal-body" id="newman-output">
+          <div class="t-output">← Click "Run Newman Simulation" to see output</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GITHUB ============ -->
+  <div class="page" id="page-github">
+    <div class="page-header">
+      <div><h1>🐛 GitHub Issue Tracking</h1><p class="subtitle">Write bug reports that developers actually understand and fix.</p></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'gh-learn')">Good vs Bad Reports</button>
+      <button class="tab-btn" onclick="switchTab(this, 'gh-create')">Create an Issue</button>
+      <button class="tab-btn" onclick="switchTab(this, 'gh-board')">Issue Board</button>
+    </div>
+
+    <div class="tab-pane active" id="gh-learn">
+      <div class="card">
+        <h3>Why Bug Reports Matter</h3>
+        <p>A bad bug report wastes everyone's time. A good bug report gets fixed fast. As a QA engineer, your job isn't just to find bugs — it's to <strong style="color:var(--accent)">communicate them so clearly that a developer can reproduce and fix them immediately.</strong></p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card compare-bad">
+          <div class="compare-label">❌ Bad Bug Report</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+            <strong style="color:#ff9090;">Title:</strong> Login not working<br/>
+            <strong style="color:#ff9090;">Description:</strong> The login page is broken. I can't log in. Please fix this ASAP.<br/>
+            <strong style="color:#ff9090;">Steps:</strong> (none provided)<br/>
+            <strong style="color:#ff9090;">Expected:</strong> (none)<br/>
+            <strong style="color:#ff9090;">Actual:</strong> (none)<br/>
+            <strong style="color:#ff9090;">Environment:</strong> (none)
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:#ff6b6b;">Developer sees this and doesn't know where to start. Bug stays open for days.</div>
+        </div>
+        <div class="compare-card compare-good">
+          <div class="compare-label">✅ Good Bug Report</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--accent);">Title:</strong> [BUG] Login returns 500 when password contains special characters<br/>
+            <strong style="color:var(--accent);">Steps:</strong> 1. Go to /login · 2. Enter user: test@co.com · 3. Password: P@ss#2024! · 4. Click Login<br/>
+            <strong style="color:var(--accent);">Expected:</strong> 200 OK with auth token<br/>
+            <strong style="color:var(--accent);">Actual:</strong> 500 Internal Server Error<br/>
+            <strong style="color:var(--accent);">Environment:</strong> Staging · Chrome 122 · API v2.3
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--accent);">Developer can reproduce it in 30 seconds and fix it the same day.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>The Perfect Bug Report Template</h3>
+        <div class="code-block">
+          <span class="lang-tag">MARKDOWN</span>
+          <code>## 🐛 Bug Report
+
+**Title:** [BUG] Brief, specific description of the issue
+
+**Severity:** 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
+
+---
+
+### Steps to Reproduce
+1. Send POST to `/api/auth/login` with body:
+   ```json
+   {"username": "test@co.com", "password": "P@ss#2024!"}
+   ```
+2. Observe the response
+
+### Expected Result
+- Status: `200 OK`
+- Body contains `token` field
+- Response time &lt; 500ms
+
+### Actual Result
+- Status: `500 Internal Server Error`
+- Body: `{"error": "Internal Server Error"}`
+- Response time: N/A (server crashed)
+
+### Environment
+- **Environment:** Staging
+- **API Version:** v2.3.1
+- **Tested With:** Postman 10.x / Newman 6.x
+- **Date:** 2024-03-15
+
+### Evidence
+![Postman screenshot showing 500 error]
+(attach screenshot here)
+
+### Notes
+Issue does NOT occur with standard passwords (no special chars).
+Works fine in DEV environment — may be related to nginx config.</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="gh-create">
+      <div class="card">
+        <h3>Create a Bug Report</h3>
+        <p style="margin-bottom:16px;">Practice creating a professional issue. Fill in the details below:</p>
+        <div class="form-group">
+          <label class="form-label">Issue Title</label>
+          <input type="text" id="issue-title" placeholder="[BUG] Brief, specific description..."/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Severity</label>
+            <select id="issue-severity">
+              <option value="">Select severity...</option>
+              <option value="critical">🔴 Critical — System down, data loss</option>
+              <option value="high">🟠 High — Major feature broken</option>
+              <option value="medium">🟡 Medium — Feature partially broken</option>
+              <option value="low">🟢 Low — Minor issue / cosmetic</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Label</label>
+            <select id="issue-label">
+              <option value="bug">bug</option>
+              <option value="security">security</option>
+              <option value="performance">performance</option>
+              <option value="enhancement">enhancement</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Steps to Reproduce</label>
+          <textarea id="issue-steps" rows="4" placeholder="1. Send POST to /api/...&#10;2. Include body: {...}&#10;3. Click Send&#10;4. Observe response"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Expected Result</label>
+            <textarea id="issue-expected" rows="3" placeholder="Status 200 OK with..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Actual Result</label>
+            <textarea id="issue-actual" rows="3" placeholder="Status 500 with error..."></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Environment</label>
+          <input type="text" id="issue-env" placeholder="Staging · API v2.3 · Postman 10.x · Date: 2024-03-15"/>
+        </div>
+        <button class="btn btn-primary" onclick="createIssue()">📝 Submit Issue</button>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="gh-board">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div class="section-title" style="margin:0;">Issue Board</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select onchange="filterIssues(this.value)" style="width:auto;padding:6px 10px;font-size:12px;">
+            <option value="all">All Issues</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </div>
+      <div id="issue-list">
+        <!-- Issues rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECURITY ============ -->
+  <div class="page" id="page-security">
+    <div class="page-header">
+      <div><h1>🔒 Security Testing (VAPT Intro)</h1><p class="subtitle">Vulnerability Assessment — what every QA engineer should know.</p></div>
+    </div>
+
+    <div class="card">
+      <h3>What is VAPT?</h3>
+      <p><strong>VAPT</strong> = <strong style="color:var(--accent)">Vulnerability Assessment and Penetration Testing</strong>. As a junior QA engineer, you won't do full penetration tests (that's a specialist job). But you <em>will</em> be expected to check for common security issues during API testing.</p>
+    </div>
+
+    <div class="section-title">Common API Vulnerabilities to Test For</div>
+
+    <div class="vuln-card critical">
+      <div class="vuln-title">🔴 Missing Authentication — CRITICAL</div>
+      <div class="vuln-desc">APIs that return sensitive data without requiring a login token. Test: send a request WITHOUT the Authorization header. Should get 401, not 200.</div>
+      <div class="code-block" style="margin-top:8px;">
+        <span class="lang-tag">TEST</span>
+        <code><span class="c-c">// Postman test: check unauth request is rejected</span>
+pm.test(<span class="c-s">"Unauthenticated request returns 401"</span>, <span class="c-k">function</span>() {
+    <span class="c-c">// Remove Authorization header before sending!</span>
+    pm.response.to.have.status(<span class="c-n">401</span>);
+});</code>
+      </div>
+    </div>
+
+    <div class="vuln-card critical">
+      <div class="vuln-title">🔴 Broken Object Level Authorization (BOLA/IDOR) — CRITICAL</div>
+      <div class="vuln-desc">When User A can access User B's data by changing an ID. Example: you're logged in as user 5, but can access <span class="inline-code">/api/users/3</span> and see user 3's private data.</div>
+      <div class="code-block" style="margin-top:8px;">
+        <span class="lang-tag">HOW TO TEST</span>
+        <code><span class="c-c">// 1. Login as User A (ID: 5)</span>
+<span class="c-c">// 2. Get Token A</span>
+<span class="c-c">// 3. Use Token A to request User B's data:</span>
+GET /api/users/3
+Authorization: Bearer TOKEN_OF_USER_5
+
+<span class="c-c">// SHOULD return 403 Forbidden</span>
+<span class="c-c">// BUG if it returns 200 with User 3's data!</span></code>
+      </div>
+    </div>
+
+    <div class="vuln-card high">
+      <div class="vuln-title">🟠 Sensitive Data in Response — HIGH</div>
+      <div class="vuln-desc">APIs that return passwords, full card numbers, or internal system paths. Test: check if login response includes the password field.</div>
+      <div class="code-block" style="margin-top:8px;">
+        <span class="lang-tag">POSTMAN JS</span>
+        <code>pm.test(<span class="c-s">"Response does not expose password"</span>, <span class="c-k">function</span>() {
+    <span class="c-k">var</span> json = pm.response.json();
+    pm.expect(json).to.not.have.property(<span class="c-s">"password"</span>);
+    pm.expect(json).to.not.have.property(<span class="c-s">"passwordHash"</span>);
+});
+
+pm.test(<span class="c-s">"No internal server paths in response"</span>, <span class="c-k">function</span>() {
+    <span class="c-k">var</span> body = pm.response.text();
+    pm.expect(body).to.not.include(<span class="c-s">"/var/www/"</span>);
+    pm.expect(body).to.not.include(<span class="c-s">"C:\\inetpub"</span>);
+});</code>
+      </div>
+    </div>
+
+    <div class="vuln-card high">
+      <div class="vuln-title">🟠 Rate Limiting Not Enforced — HIGH</div>
+      <div class="vuln-desc">APIs that allow unlimited requests — attackers can brute-force passwords or overload the server. Test: send 20+ login requests quickly.</div>
+      <div class="code-block" style="margin-top:8px;">
+        <span class="lang-tag">NEWMAN CLI</span>
+        <code><span class="c-c"># Run login request 50 times rapidly:</span>
+newman run login-test.json -n 50 --delay-request 100
+
+<span class="c-c"># After ~10 attempts with wrong password,</span>
+<span class="c-c"># expect 429 Too Many Requests</span>
+<span class="c-c"># BUG if you still get 200 or 401 without lockout</span></code>
+      </div>
+    </div>
+
+    <div class="vuln-card medium">
+      <div class="vuln-title">🟡 Missing Security Headers — MEDIUM</div>
+      <div class="vuln-desc">HTTP security headers protect against common attacks. Every API response should include them.</div>
+      <div class="code-block" style="margin-top:8px;">
+        <span class="lang-tag">HEADERS TO CHECK</span>
+        <code>✅ X-Content-Type-Options: nosniff
+✅ X-Frame-Options: DENY
+✅ Strict-Transport-Security: max-age=31536000
+✅ Content-Security-Policy: default-src 'self'
+❌ Server: Apache/2.4.51 (reveals version — BAD!)</code>
+      </div>
+    </div>
+
+    <div class="hint-box" style="margin-top:16px;">
+      <div class="hint-label">📋 Your Security Testing Checklist</div>
+      <div>For every API endpoint, ask: (1) Does it require auth? (2) Can I access other users' data? (3) Does the response hide sensitive fields? (4) Are there security headers? (5) Is rate limiting enforced?</div>
+    </div>
+  </div>
+
+  <!-- ============ TASKS ============ -->
+  <div class="page" id="page-tasks">
+    <div class="page-header">
+      <div><h1>✅ Daily Tasks</h1><p class="subtitle">Complete these tasks to build real job-ready skills.</p></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <h3>📅 Week 1 — Foundation</h3>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Focus on understanding the tools. Don't worry about being perfect.</p>
+      <div id="task-list-week1"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <h3>📅 Week 2 — Hands-On Testing</h3>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Start writing real test scripts and creating bug reports.</p>
+      <div id="task-list-week2"></div>
+    </div>
+
+    <div class="card">
+      <h3>📅 Week 3-4 — Professional Skills</h3>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Automate, report, and demonstrate your skills.</p>
+      <div id="task-list-week3"></div>
+    </div>
+  </div>
+
+  <!-- ============ CHEATSHEET ============ -->
+  <div class="page" id="page-cheatsheet">
+    <div class="page-header">
+      <div><h1>📋 Cheatsheets</h1><p class="subtitle">Quick reference — print these out and keep them on your desk.</p></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'cs-status')">Status Codes</button>
+      <button class="tab-btn" onclick="switchTab(this, 'cs-pm')">Postman Scripts</button>
+      <button class="tab-btn" onclick="switchTab(this, 'cs-newman')">Newman CLI</button>
+      <button class="tab-btn" onclick="switchTab(this, 'cs-bug')">Bug Report</button>
+    </div>
+
+    <div class="tab-pane active" id="cs-status">
+      <div class="card">
+        <div class="cheat-section">
+          <h3>2xx — Success</h3>
+          <div class="cheat-item"><code>200 OK</code><span class="cheat-desc">General success. GET, PUT, PATCH usually return this.</span></div>
+          <div class="cheat-item"><code>201 Created</code><span class="cheat-desc">New resource created successfully. POST usually returns this.</span></div>
+          <div class="cheat-item"><code>204 No Content</code><span class="cheat-desc">Success but no body. DELETE usually returns this.</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>4xx — Client Errors (Your Fault)</h3>
+          <div class="cheat-item"><code>400 Bad Request</code><span class="cheat-desc">Malformed request, missing required field, invalid format.</span></div>
+          <div class="cheat-item"><code>401 Unauthorized</code><span class="cheat-desc">Not logged in / no token / expired token.</span></div>
+          <div class="cheat-item"><code>403 Forbidden</code><span class="cheat-desc">Logged in, but not allowed to do this action.</span></div>
+          <div class="cheat-item"><code>404 Not Found</code><span class="cheat-desc">Resource doesn't exist. Check the ID / URL.</span></div>
+          <div class="cheat-item"><code>409 Conflict</code><span class="cheat-desc">Duplicate data (e.g., email already registered).</span></div>
+          <div class="cheat-item"><code>422 Unprocessable</code><span class="cheat-desc">Validation failed (e.g., email format invalid).</span></div>
+          <div class="cheat-item"><code>429 Too Many</code><span class="cheat-desc">Rate limited. Slow down!</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>5xx — Server Errors (Their Fault)</h3>
+          <div class="cheat-item"><code>500 Internal Server Error</code><span class="cheat-desc">Server crashed. Usually a code bug. Log a Critical issue!</span></div>
+          <div class="cheat-item"><code>502 Bad Gateway</code><span class="cheat-desc">Server can't reach a service it depends on.</span></div>
+          <div class="cheat-item"><code>503 Service Unavailable</code><span class="cheat-desc">Server overloaded or down for maintenance.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="cs-pm">
+      <div class="card">
+        <div class="cheat-section">
+          <h3>Status Checks</h3>
+          <div class="cheat-item"><code>pm.response.to.have.status(200)</code><span class="cheat-desc">Exact status check</span></div>
+          <div class="cheat-item"><code>pm.expect(pm.response.code).to.be.below(400)</code><span class="cheat-desc">No error status</span></div>
+          <div class="cheat-item"><code>pm.expect(pm.response.code).to.be.oneOf([200, 201])</code><span class="cheat-desc">Multiple valid codes</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Body Checks</h3>
+          <div class="cheat-item"><code>var j = pm.response.json()</code><span class="cheat-desc">Parse JSON body</span></div>
+          <div class="cheat-item"><code>pm.expect(j).to.have.property("token")</code><span class="cheat-desc">Field exists</span></div>
+          <div class="cheat-item"><code>pm.expect(j.token).to.not.be.empty</code><span class="cheat-desc">Not empty</span></div>
+          <div class="cheat-item"><code>pm.expect(j.role).to.equal("admin")</code><span class="cheat-desc">Exact value</span></div>
+          <div class="cheat-item"><code>pm.expect(j.id).to.be.above(0)</code><span class="cheat-desc">Positive number</span></div>
+          <div class="cheat-item"><code>pm.expect(j.users).to.be.an("array")</code><span class="cheat-desc">Is array</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Header Checks</h3>
+          <div class="cheat-item"><code>pm.response.to.have.header("Content-Type")</code><span class="cheat-desc">Header exists</span></div>
+          <div class="cheat-item"><code>pm.response.headers.get("Content-Type")</code><span class="cheat-desc">Get header value</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Saving Variables</h3>
+          <div class="cheat-item"><code>pm.environment.set("key", value)</code><span class="cheat-desc">Save to environment</span></div>
+          <div class="cheat-item"><code>pm.environment.get("key")</code><span class="cheat-desc">Read from environment</span></div>
+          <div class="cheat-item"><code>pm.globals.set("key", value)</code><span class="cheat-desc">Save globally</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Performance</h3>
+          <div class="cheat-item"><code>pm.response.responseTime</code><span class="cheat-desc">Response time in ms</span></div>
+          <div class="cheat-item"><code>pm.expect(pm.response.responseTime).to.be.below(2000)</code><span class="cheat-desc">Under 2 seconds</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="cs-newman">
+      <div class="card">
+        <div class="cheat-section">
+          <h3>Basic</h3>
+          <div class="cheat-item"><code>newman run col.json</code><span class="cheat-desc">Run a collection</span></div>
+          <div class="cheat-item"><code>newman run col.json -e env.json</code><span class="cheat-desc">With environment</span></div>
+          <div class="cheat-item"><code>newman run col.json --folder "Login"</code><span class="cheat-desc">Run specific folder only</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Reports</h3>
+          <div class="cheat-item"><code>--reporters cli</code><span class="cheat-desc">Default terminal output</span></div>
+          <div class="cheat-item"><code>--reporters html --reporter-html-export report.html</code><span class="cheat-desc">HTML report</span></div>
+          <div class="cheat-item"><code>-r htmlextra</code><span class="cheat-desc">Fancy HTML report (install first)</span></div>
+          <div class="cheat-item"><code>--reporters json --reporter-json-export results.json</code><span class="cheat-desc">JSON output for CI</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Options</h3>
+          <div class="cheat-item"><code>-n 5</code><span class="cheat-desc">Run collection 5 times</span></div>
+          <div class="cheat-item"><code>--delay-request 300</code><span class="cheat-desc">Wait 300ms between requests</span></div>
+          <div class="cheat-item"><code>--timeout-request 5000</code><span class="cheat-desc">Fail if request > 5 seconds</span></div>
+          <div class="cheat-item"><code>--bail</code><span class="cheat-desc">Stop on first failure</span></div>
+          <div class="cheat-item"><code>--suppress-exit-code</code><span class="cheat-desc">Don't fail CI on test failures</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="cs-bug">
+      <div class="card">
+        <div class="cheat-section">
+          <h3>Severity Guide</h3>
+          <div class="cheat-item"><code>🔴 Critical</code><span class="cheat-desc">System down, data loss, security breach, payment failures</span></div>
+          <div class="cheat-item"><code>🟠 High</code><span class="cheat-desc">Major feature broken, blocks users from completing key task</span></div>
+          <div class="cheat-item"><code>🟡 Medium</code><span class="cheat-desc">Feature works partially, workaround exists</span></div>
+          <div class="cheat-item"><code>🟢 Low</code><span class="cheat-desc">Cosmetic issue, typo, minor UI inconsistency</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>Bug Report Must-Haves</h3>
+          <div class="cheat-item"><code>Title</code><span class="cheat-desc">[BUG] Specific, searchable, includes error/endpoint if relevant</span></div>
+          <div class="cheat-item"><code>Steps</code><span class="cheat-desc">Numbered steps anyone can follow to reproduce the bug</span></div>
+          <div class="cheat-item"><code>Expected</code><span class="cheat-desc">What should happen (be specific: "Status 200 with token field")</span></div>
+          <div class="cheat-item"><code>Actual</code><span class="cheat-desc">What actually happened (status code, error message, screenshot)</span></div>
+          <div class="cheat-item"><code>Environment</code><span class="cheat-desc">Which env (dev/staging/prod), API version, test tool used</span></div>
+          <div class="cheat-item"><code>Evidence</code><span class="cheat-desc">Postman screenshot, Newman log, or HAR file attached</span></div>
+        </div>
+        <div class="cheat-section">
+          <h3>GitHub Labels to Use</h3>
+          <div class="cheat-item"><code>bug</code><span class="cheat-desc">Something isn't working as expected</span></div>
+          <div class="cheat-item"><code>security</code><span class="cheat-desc">Security vulnerability or concern</span></div>
+          <div class="cheat-item"><code>performance</code><span class="cheat-desc">Slow response times</span></div>
+          <div class="cheat-item"><code>critical</code><span class="cheat-desc">Needs immediate attention</span></div>
+          <div class="cheat-item"><code>needs-repro</code><span class="cheat-desc">Can't reproduce — needs more info</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL: Issue Detail -->
+<div class="modal-overlay" id="issue-modal">
+  <div class="modal">
+    <span class="modal-close" onclick="closeModal('issue-modal')">×</span>
+    <h2 id="modal-issue-title">Issue Title</h2>
+    <div id="modal-issue-body"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+var state = {
+  xp: 0,
+  testsRun: 0,
+  tasksCompleted: 0,
+  issueCount: 0,
+  currentTester: null,
+  issues: [
+    { id: 1, title: "[BUG] Login returns 500 with special char passwords", severity: "critical", label: "bug", status: "open", steps: "1. POST /api/auth/login\n2. Password: P@ss#2024!\n3. Click Send", expected: "200 OK with token", actual: "500 Internal Server Error", env: "Staging · API v2.3 · Postman 10" },
+    { id: 2, title: "[BUG] GET /users returns 200 without auth token", severity: "high", label: "security", status: "open", steps: "1. Remove Authorization header\n2. GET /api/users\n3. Observe response", expected: "401 Unauthorized", actual: "200 OK with all user data", env: "Staging · API v2.3" },
+    { id: 3, title: "[BUG] Response time for /claims exceeds 5 seconds", severity: "medium", label: "performance", status: "open", steps: "1. GET /api/claims\n2. Measure response time", expected: "Response < 2000ms", actual: "Response: 5312ms", env: "Staging · Newman 6.0" },
+    { id: 4, title: "[BUG] Password field exposed in user profile response", severity: "critical", label: "security", status: "closed", steps: "1. GET /api/users/1\n2. Check response body", expected: "No password field in response", actual: "password: 'hashed_value_visible'", env: "Dev · Postman 10" }
+  ],
+  tasks: {
+    week1: [
+      { id: 't1', title: 'Read "API Basics" section completely', desc: 'Understand GET, POST, PUT, DELETE and common status codes.', points: 50, done: false },
+      { id: 't2', title: 'Install Postman on your computer', desc: 'Download from postman.com and create a free account.', points: 50, done: false },
+      { id: 't3', title: 'Create your first Collection in Postman', desc: 'Name it "My First API Tests" and add 3 folders inside.', points: 75, done: false },
+      { id: 't4', title: 'Send your first GET request in Postman', desc: 'Try: GET https://jsonplaceholder.typicode.com/users/1 — explore the response.', points: 75, done: false },
+      { id: 't5', title: 'Test the Mock Login API in the Live Tester', desc: 'Use the Live API Tester section — test valid and invalid credentials.', points: 100, done: false }
+    ],
+    week2: [
+      { id: 't6', title: 'Write your first pm.test() status check', desc: 'Open the Script Playground and write a test that checks status === 200.', points: 100, done: false },
+      { id: 't7', title: 'Write a test that validates the response body', desc: 'Check that "token" field exists and is not empty.', points: 100, done: false },
+      { id: 't8', title: 'Find and report a bug using the GitHub Issues form', desc: 'Use the GitHub Issues section to submit your first professional bug report.', points: 150, done: false },
+      { id: 't9', title: 'Install Newman and run your first collection', desc: 'Install Node.js then: npm install -g newman. Run your exported collection.', points: 150, done: false },
+      { id: 't10', title: 'Test a negative case (invalid input)', desc: 'Test the login API with missing password. Confirm you get a 400 error.', points: 100, done: false }
+    ],
+    week3: [
+      { id: 't11', title: 'Test a complete user journey (Login → Get Profile → Update)', desc: 'Chain 3 requests: login, get user, update name. Use environment variables.', points: 200, done: false },
+      { id: 't12', title: 'Run a security check on the APIs', desc: 'Test each endpoint without auth token. Document which ones incorrectly return 200.', points: 200, done: false },
+      { id: 't13', title: 'Generate a Newman HTML report', desc: 'Install htmlextra reporter and generate a proper HTML test report.', points: 150, done: false },
+      { id: 't14', title: 'Write 10 test scripts covering different validations', desc: 'Mix of: status checks, body checks, header checks, and performance checks.', points: 250, done: false },
+      { id: 't15', title: 'Review and close 2 bug reports on the issue board', desc: 'Go to GitHub Issues → mark 2 issues as resolved and explain why.', points: 100, done: false }
+    ]
+  }
+};
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  var page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  var navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(function(item) {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + id + "'")) {
+      item.classList.add('active');
+    }
+  });
+  if (id === 'github') renderIssues('all');
+  if (id === 'tasks') renderTasks();
+  window.scrollTo(0, 0);
+  var sidebar = document.getElementById('sidebar');
+  if (window.innerWidth <= 768) sidebar.classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ─────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────
+function switchTab(btn, paneId) {
+  var parent = btn.closest('.page') || document.body;
+  var tabGroup = btn.closest('.tabs');
+  tabGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  var allPanes = parent.querySelectorAll('.tab-pane');
+  allPanes.forEach(function(pane) {
+    if (pane.id === paneId) pane.classList.add('active');
+    else pane.classList.remove('active');
+  });
+}
+
+// ─────────────────────────────────────────────
+// MOCK API ENGINE
+// ─────────────────────────────────────────────
+var mockAPIs = {
+  login: {
+    method: 'POST', url: '/api/auth/login',
+    body: '{\n  "username": "dr.ahmed@clinic.com",\n  "password": "SecurePass123"\n}',
+    hasBody: true, hasParam: false,
+    handler: function(body) {
+      var b = JSON.parse(body);
+      if (!b.username || !b.password) return { status: 400, data: { error: "Missing username or password", code: "VALIDATION_ERROR" } };
+      if (b.password.match(/[#@$!%]/)) return { status: 500, data: { error: "Internal Server Error", code: "SERVER_ERROR" } };
+      if (b.username === 'dr.ahmed@clinic.com' && b.password === 'SecurePass123') {
+        return { status: 200, data: { token: "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NywidCI6MTcxMH0.abc123xyz", expiresIn: 3600, user: { id: 7, name: "Dr. Ahmed Khan", role: "doctor", department: "Cardiology" } } };
+      }
+      return { status: 401, data: { error: "Invalid credentials", code: "AUTH_FAILED" } };
+    },
+    tests: [
+      { name: 'Status code is 200', fn: function(s, d) { return s === 200; } },
+      { name: 'Response contains token', fn: function(s, d) { return d && d.token && d.token.length > 0; } },
+      { name: 'User role is doctor', fn: function(s, d) { return d && d.user && d.user.role === 'doctor'; } },
+      { name: 'Token is JWT format', fn: function(s, d) { return d && d.token && d.token.split('.').length === 3; } }
+    ]
+  },
+  users: {
+    method: 'GET', url: '/api/users',
+    hasBody: false, hasParam: false,
+    handler: function() {
+      return { status: 200, data: { users: [
+        { id: 1, name: 'Dr. Ahmed Khan', role: 'doctor', active: true, department: 'Cardiology' },
+        { id: 2, name: 'Nurse Rahima Begum', role: 'nurse', active: true, department: 'ICU' },
+        { id: 3, name: 'Admin Karim', role: 'admin', active: true, department: 'Management' },
+        { id: 4, name: 'Dr. Fatima', role: 'doctor', active: false, department: 'Neurology' }
+      ], total: 4 } };
+    },
+    tests: [
+      { name: 'Status is 200', fn: function(s, d) { return s === 200; } },
+      { name: 'Users is an array', fn: function(s, d) { return Array.isArray(d.users); } },
+      { name: 'Array is not empty', fn: function(s, d) { return d.users && d.users.length > 0; } },
+      { name: 'Each user has id and name', fn: function(s, d) { return d.users && d.users.every(function(u) { return u.id && u.name; }); } }
+    ]
+  },
+  'user-by-id': {
+    method: 'GET', url: '/api/users/:id',
+    hasBody: false, hasParam: true,
+    handler: function(body, param) {
+      var id = parseInt(param);
+      var users = { 1: { id: 1, name: 'Dr. Ahmed Khan', email: 'ahmed@clinic.com', role: 'doctor', active: true, claimCount: 12 }, 2: { id: 2, name: 'Nurse Rahima', email: 'rahima@clinic.com', role: 'nurse', active: true, claimCount: 5 } };
+      if (!id || id < 1) return { status: 400, data: { error: "Invalid ID format" } };
+      if (!users[id]) return { status: 404, data: { error: "User not found", id: id } };
+      return { status: 200, data: users[id] };
+    },
+    tests: [
+      { name: 'Status is 200', fn: function(s, d) { return s === 200; } },
+      { name: 'User has id field', fn: function(s, d) { return d && d.id !== undefined; } },
+      { name: 'Response does not expose password', fn: function(s, d) { return d && !d.password && !d.passwordHash; } },
+      { name: 'Email is present', fn: function(s, d) { return d && d.email; } }
+    ]
+  },
+  'create-claim': {
+    method: 'POST', url: '/api/claims',
+    body: '{\n  "patientId": 42,\n  "type": "medical",\n  "amount": 15000.00,\n  "diagnosis": "Hypertension",\n  "doctorId": 7\n}',
+    hasBody: true, hasParam: false,
+    handler: function(body) {
+      var b = JSON.parse(body);
+      if (!b.patientId || !b.type || !b.amount) return { status: 400, data: { error: "Missing required fields: patientId, type, amount" } };
+      if (b.amount <= 0) return { status: 422, data: { error: "Amount must be positive" } };
+      return { status: 201, data: { id: Math.floor(Math.random() * 9000) + 1000, patientId: b.patientId, type: b.type, amount: b.amount, status: "pending", submittedAt: new Date().toISOString(), referenceNo: "CLM-" + Math.random().toString(36).substr(2, 8).toUpperCase() } };
+    },
+    tests: [
+      { name: 'Status is 201 Created', fn: function(s, d) { return s === 201; } },
+      { name: 'Claim has an ID', fn: function(s, d) { return d && d.id > 0; } },
+      { name: 'Status is pending', fn: function(s, d) { return d && d.status === 'pending'; } },
+      { name: 'Reference number generated', fn: function(s, d) { return d && d.referenceNo && d.referenceNo.startsWith('CLM-'); } }
+    ]
+  },
+  'update-claim': {
+    method: 'PUT', url: '/api/claims/:id/status',
+    body: '{\n  "status": "approved",\n  "reviewNote": "All documents verified"\n}',
+    hasBody: true, hasParam: true,
+    handler: function(body, param) {
+      var b = JSON.parse(body);
+      var id = parseInt(param);
+      var validStatuses = ['approved', 'rejected', 'pending', 'under_review'];
+      if (!id) return { status: 400, data: { error: "Invalid claim ID" } };
+      if (!b.status || !validStatuses.includes(b.status)) return { status: 422, data: { error: "Invalid status. Must be: " + validStatuses.join(', ') } };
+      return { status: 200, data: { id: id, status: b.status, updatedAt: new Date().toISOString(), updatedBy: "admin@clinic.com" } };
+    },
+    tests: [
+      { name: 'Status is 200', fn: function(s, d) { return s === 200; } },
+      { name: 'Status was updated', fn: function(s, d) { return d && d.status === 'approved'; } },
+      { name: 'updatedAt field present', fn: function(s, d) { return d && d.updatedAt; } }
+    ]
+  },
+  'delete-user': {
+    method: 'DELETE', url: '/api/users/:id',
+    hasBody: false, hasParam: true,
+    handler: function(body, param) {
+      var id = parseInt(param);
+      if (!id || id < 1) return { status: 400, data: { error: "Invalid ID" } };
+      if (id > 100) return { status: 404, data: { error: "User not found" } };
+      return { status: 204, data: null };
+    },
+    tests: [
+      { name: 'Status is 204 No Content', fn: function(s, d) { return s === 204; } },
+      { name: 'Body is empty (no content)', fn: function(s, d) { return d === null; } }
+    ]
+  }
+};
+
+function openTester(apiKey) {
+  state.currentTester = apiKey;
+  var api = mockAPIs[apiKey];
+  var panel = document.getElementById('tester-panel');
+  panel.style.display = 'block';
+  document.getElementById('tp-method').textContent = api.method;
+  document.getElementById('tp-method').className = 'badge badge-' + api.method.toLowerCase();
+  document.getElementById('tp-url').textContent = api.url;
+  document.getElementById('tp-body-section').style.display = api.hasBody ? 'block' : 'none';
+  if (api.hasBody && api.body) document.getElementById('tp-body').value = api.body;
+  document.getElementById('tp-param-section').style.display = api.hasParam ? 'block' : 'none';
+  document.getElementById('tp-param').value = api.hasParam ? '1' : '';
+  document.getElementById('tp-response').textContent = '→ Click "Send Request" to test this endpoint';
+  document.getElementById('tp-status-bar').style.display = 'none';
+  document.getElementById('tp-tests-result').style.display = 'none';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function sendMockRequest() {
+  if (!state.currentTester) return;
+  var api = mockAPIs[state.currentTester];
+  var body = document.getElementById('tp-body').value || '{}';
+  var param = document.getElementById('tp-param').value || '1';
+  var startTime = Date.now();
+  try {
+    var result = api.handler(body, param);
+    var duration = Date.now() - startTime + Math.floor(Math.random() * 200 + 50);
+    state.testsRun++;
+    updateStats();
+    addXP(25);
+    var statusBar = document.getElementById('tp-status-bar');
+    statusBar.style.display = 'flex';
+    var statusCode = document.getElementById('tp-status-code');
+    statusCode.textContent = result.status + ' ' + getStatusText(result.status);
+    statusCode.className = 's-value ' + (result.status < 400 ? 'status-ok' : 'status-err');
+    document.getElementById('tp-time').textContent = duration + 'ms';
+    var responseBody = result.data === null ? '(Empty — 204 No Content)' : JSON.stringify(result.data, null, 2);
+    document.getElementById('tp-size').textContent = responseBody.length + ' B';
+    document.getElementById('tp-response').textContent = responseBody;
+    var testsResult = document.getElementById('tp-tests-result');
+    var testsList = document.getElementById('tp-tests-list');
+    testsResult.style.display = 'block';
+    testsList.innerHTML = '';
+    api.tests.forEach(function(test) {
+      var passed = test.fn(result.status, result.data);
+      var li = document.createElement('li');
+      li.style.cssText = 'padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px;';
+      li.innerHTML = '<span style="color:' + (passed ? 'var(--accent)' : 'var(--accent3)') + ';font-size:14px;">' + (passed ? '✓' : '✗') + '</span><span style="color:' + (passed ? 'var(--text)' : 'var(--accent3)') + '">' + test.name + '</span>';
+      testsList.appendChild(li);
+    });
+    showToast(result.status < 400 ? '✅ Response received: ' + result.status : '⚠️ Error response: ' + result.status, result.status < 400 ? 'success' : 'error');
+  } catch(e) {
+    document.getElementById('tp-response').textContent = 'Error: ' + e.message + '\n\nMake sure your JSON body is valid!';
+    showToast('❌ Request failed — check your JSON body', 'error');
+  }
+}
+
+function getStatusText(code) {
+  var texts = { 200: 'OK', 201: 'Created', 204: 'No Content', 400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found', 409: 'Conflict', 422: 'Unprocessable', 429: 'Too Many Requests', 500: 'Internal Server Error' };
+  return texts[code] || '';
+}
+
+function clearResponse() {
+  document.getElementById('tp-response').textContent = '→ Response will appear here after you click Send Request';
+  document.getElementById('tp-status-bar').style.display = 'none';
+  document.getElementById('tp-tests-result').style.display = 'none';
+}
+
+// ─────────────────────────────────────────────
+// SCRIPT PLAYGROUND
+// ─────────────────────────────────────────────
+var originalScript = document.getElementById('script-editor') ? document.getElementById('script-editor').value : '';
+
+function runScript() {
+  var code = document.getElementById('script-editor').value;
+  var results = [];
+  var passed = 0;
+  var failed = 0;
+  function pmTest(name, fn) {
+    try {
+      fn();
+      results.push({ name: name, ok: true });
+      passed++;
+    } catch(e) {
+      results.push({ name: name, ok: false, msg: e.message });
+      failed++;
+    }
+  }
+  function expect(val) {
+    return {
+      toBe: function(exp) { if (val !== exp) throw new Error('Expected ' + JSON.stringify(exp) + ' but got ' + JSON.stringify(val)); },
+      toEqual: function(exp) { if (JSON.stringify(val) !== JSON.stringify(exp)) throw new Error('Expected ' + JSON.stringify(exp)); },
+      toHaveProperty: function(key) { if (!val || !(key in val)) throw new Error('Expected object to have property "' + key + '"'); },
+      toBeLessThan: function(n) { if (val >= n) throw new Error('Expected ' + val + ' to be less than ' + n); },
+      toBeGreaterThan: function(n) { if (val <= n) throw new Error('Expected ' + val + ' to be greater than ' + n); },
+      toContain: function(s) { if (!String(val).includes(s)) throw new Error('Expected to contain "' + s + '"'); }
+    };
+  }
+  try {
+    eval(code);
+  } catch(e) {
+    document.getElementById('script-output').innerHTML = '<span class="fail">Syntax Error: ' + e.message + '</span>';
+    return;
+  }
+  var output = 'Test Results\n' + '─'.repeat(40) + '\n\n';
+  results.forEach(function(r) {
+    output += (r.ok ? '✓ PASS' : '✗ FAIL') + '  ' + r.name + '\n';
+    if (!r.ok && r.msg) output += '       → ' + r.msg + '\n';
+  });
+  output += '\n' + '─'.repeat(40) + '\n';
+  output += passed + ' passed, ' + failed + ' failed\n';
+  var el = document.getElementById('script-output');
+  el.innerHTML = '';
+  output.split('\n').forEach(function(line) {
+    var span = document.createElement('span');
+    if (line.startsWith('✓')) span.className = 'pass';
+    else if (line.startsWith('✗') || line.startsWith('       →')) span.className = 'fail';
+    span.textContent = line + '\n';
+    el.appendChild(span);
+  });
+  if (passed > 0) { addXP(passed * 15); showToast('✅ ' + passed + ' test' + (passed > 1 ? 's' : '') + ' passed!', 'success'); }
+  if (failed > 0) showToast('❌ ' + failed + ' test' + (failed > 1 ? 's' : '') + ' failed', 'error');
+}
+
+function resetScript() {
+  document.getElementById('script-editor').value = document.getElementById('script-editor').defaultValue || originalScript;
+  document.getElementById('script-output').innerHTML = '← Click Run Tests to see results';
+}
+
+// ─────────────────────────────────────────────
+// NEWMAN SIMULATOR
+// ─────────────────────────────────────────────
+function runNewmanSim() {
+  var out = document.getElementById('newman-output');
+  out.innerHTML = '';
+  var lines = [
+    { text: 'newman', cls: 't-success', delay: 0 },
+    { text: '', cls: '', delay: 100 },
+    { text: '→  HealthClaim API Tests', cls: 't-output', delay: 200 },
+    { text: '', cls: '', delay: 300 },
+    { text: '  Authentication', cls: 't-running', delay: 500 },
+    { text: '    POST /api/auth/login   ✓ Status is 200   ✓ Token returned   ✓ Response < 500ms', cls: 't-success', delay: 800 },
+    { text: '    POST /api/auth/logout   ✓ Status is 200', cls: 't-success', delay: 1100 },
+    { text: '', cls: '', delay: 1200 },
+    { text: '  Patients', cls: 't-running', delay: 1300 },
+    { text: '    GET /api/users         ✓ Status is 200   ✓ Array not empty', cls: 't-success', delay: 1600 },
+    { text: '    GET /api/users/1       ✓ Status is 200   ✓ No password in response', cls: 't-success', delay: 1900 },
+    { text: '    GET /api/users/999     ✓ Status is 404   ✓ Error message present', cls: 't-success', delay: 2200 },
+    { text: '', cls: '', delay: 2300 },
+    { text: '  Claims', cls: 't-running', delay: 2400 },
+    { text: '    POST /api/claims       ✓ Status is 201   ✓ ID generated   ✓ Reference number created', cls: 't-success', delay: 2700 },
+    { text: '    PUT  /api/claims/1     ✗ Status is 200   ✗ Expected: approved  Actual: pending', cls: 't-error', delay: 3000 },
+    { text: '', cls: '', delay: 3100 },
+    { text: '  Negative Tests', cls: 't-running', delay: 3200 },
+    { text: '    POST /api/auth/login (no pw)  ✓ Status is 400', cls: 't-success', delay: 3500 },
+    { text: '    GET  /api/users (no auth)     ✓ Status is 401', cls: 't-success', delay: 3800 },
+    { text: '', cls: '', delay: 4000 },
+    { text: '──────────────────────────────────────────', cls: 't-output', delay: 4100 },
+    { text: '  Requests   10   •   Tests   18', cls: 't-output', delay: 4200 },
+    { text: '  Passed     17   •   Failed   1', cls: 't-success', delay: 4300 },
+    { text: '  Duration   1456ms', cls: 't-output', delay: 4400 },
+    { text: '', cls: '', delay: 4500 },
+    { text: '  Report saved: ./newman/report.html', cls: 't-running', delay: 4600 },
+  ];
+  lines.forEach(function(line) {
+    setTimeout(function() {
+      var div = document.createElement('div');
+      div.className = line.cls;
+      div.textContent = line.text || '\u00a0';
+      out.appendChild(div);
+      out.scrollTop = out.scrollHeight;
+    }, line.delay);
+  });
+  setTimeout(function() { addXP(50); showToast('Newman simulation complete!', 'info'); }, 4700);
+}
+
+function clearNewman() {
+  document.getElementById('newman-output').innerHTML = '<div class="t-output">← Click "Run Newman Simulation" to see output</div>';
+}
+
+// ─────────────────────────────────────────────
+// GITHUB ISSUES
+// ─────────────────────────────────────────────
+function createIssue() {
+  var title = document.getElementById('issue-title').value.trim();
+  var severity = document.getElementById('issue-severity').value;
+  var label = document.getElementById('issue-label').value;
+  var steps = document.getElementById('issue-steps').value.trim();
+  var expected = document.getElementById('issue-expected').value.trim();
+  var actual = document.getElementById('issue-actual').value.trim();
+  var env = document.getElementById('issue-env').value.trim();
+  if (!title || !severity || !steps || !expected || !actual) {
+    showToast('⚠️ Please fill in all required fields', 'error');
+    return;
+  }
+  var issue = { id: state.issues.length + 1, title: title, severity: severity, label: label, status: 'open', steps: steps, expected: expected, actual: actual, env: env || 'Not specified' };
+  state.issues.unshift(issue);
+  state.issueCount++;
+  addXP(100);
+  updateStats();
+  ['issue-title','issue-steps','issue-expected','issue-actual','issue-env'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('issue-severity').value = '';
+  showToast('✅ Issue #' + issue.id + ' created successfully!', 'success');
+  switchTab(document.querySelector('#page-github .tabs .tab-btn:last-child'), 'gh-board');
+  document.querySelector('#page-github .tabs .tab-btn:last-child').click();
+  renderIssues('all');
+}
+
+function renderIssues(filter) {
+  var list = document.getElementById('issue-list');
+  if (!list) return;
+  list.innerHTML = '';
+  state.issues.filter(function(issue) { return filter === 'all' || issue.status === filter; }).forEach(function(issue) {
+    var div = document.createElement('div');
+    div.className = 'issue-item';
+    div.onclick = function() { openIssueModal(issue); };
+    div.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">' +
+      '<span style="color:var(--text3);font-family:var(--mono);font-size:11px;">#' + issue.id + '</span>' +
+      '<span class="issue-tag tag-' + issue.severity + '">' + issue.severity + '</span>' +
+      '<span class="issue-tag tag-' + issue.status + '">' + issue.status + '</span>' +
+      '<span class="issue-tag tag-bug">' + issue.label + '</span>' +
+      '</div>' +
+      '<div class="issue-title">' + issue.title + '</div>' +
+      '<div class="issue-meta"><span>' + (issue.env || '') + '</span></div>';
+    list.appendChild(div);
+  });
+  if (list.children.length === 0) {
+    list.innerHTML = '<div class="card"><p style="text-align:center;color:var(--text3);">No issues found. Create one in the "Create an Issue" tab!</p></div>';
+  }
+}
+
+function filterIssues(filter) { renderIssues(filter); }
+
+function openIssueModal(issue) {
+  document.getElementById('modal-issue-title').textContent = issue.title;
+  document.getElementById('modal-issue-body').innerHTML =
+    '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">' +
+    '<span class="issue-tag tag-' + issue.severity + '">' + issue.severity + '</span>' +
+    '<span class="issue-tag tag-' + issue.status + '">' + issue.status + '</span>' +
+    '<span class="badge badge-get">' + issue.label + '</span>' +
+    '</div>' +
+    '<div class="section-title">Steps to Reproduce</div>' +
+    '<pre style="font-size:13px;color:var(--text2);white-space:pre-wrap;font-family:var(--sans);">' + (issue.steps || 'Not provided') + '</pre>' +
+    '<div class="section-title">Expected Result</div>' +
+    '<div class="hint-box" style="background:rgba(0,229,160,0.05);">' + (issue.expected || 'Not specified') + '</div>' +
+    '<div class="section-title">Actual Result</div>' +
+    '<div class="hint-box" style="background:rgba(255,107,107,0.05);border-color:rgba(255,107,107,0.2);color:#ffb3b3;">' + (issue.actual || 'Not specified') + '</div>' +
+    '<div class="section-title">Environment</div>' +
+    '<p style="color:var(--text2);font-size:13px;">' + (issue.env || 'Not specified') + '</p>' +
+    (issue.status === 'open' ? '<div style="margin-top:20px;"><button class="btn btn-secondary btn-sm" onclick="closeIssue(' + issue.id + ')">✓ Mark as Closed</button></div>' : '');
+  document.getElementById('issue-modal').classList.add('open');
+}
+
+function closeIssue(id) {
+  state.issues.forEach(function(i) { if (i.id === id) i.status = 'closed'; });
+  closeModal('issue-modal');
+  renderIssues('all');
+  addXP(50);
+  showToast('Issue #' + id + ' closed', 'success');
+}
+
+// ─────────────────────────────────────────────
+// TASKS
+// ─────────────────────────────────────────────
+function renderTasks() {
+  ['week1','week2','week3'].forEach(function(week) {
+    var container = document.getElementById('task-list-' + week);
+    if (!container) return;
+    container.innerHTML = '';
+    state.tasks[week].forEach(function(task) {
+      var div = document.createElement('div');
+      div.className = 'task-item' + (task.done ? ' completed' : '');
+      div.innerHTML =
+        '<div class="task-check' + (task.done ? ' checked' : '') + '" onclick="toggleTask(\'' + week + '\',\'' + task.id + '\')"></div>' +
+        '<div class="task-body">' +
+        '<h4 style="' + (task.done ? 'text-decoration:line-through;opacity:0.5;' : '') + '">' + task.title + '</h4>' +
+        '<p>' + task.desc + '</p>' +
+        '</div>' +
+        '<div class="task-points">+' + task.points + ' XP</div>';
+      container.appendChild(div);
+    });
+  });
+}
+
+function toggleTask(week, id) {
+  var task = state.tasks[week].find(function(t) { return t.id === id; });
+  if (!task) return;
+  task.done = !task.done;
+  if (task.done) {
+    state.tasksCompleted++;
+    addXP(task.points);
+    showToast('✅ Task complete! +' + task.points + ' XP', 'success');
+  } else {
+    state.tasksCompleted = Math.max(0, state.tasksCompleted - 1);
+    state.xp = Math.max(0, state.xp - task.points);
+    updateXPDisplay();
+  }
+  updateStats();
+  renderTasks();
+  updateProgress();
+}
+
+// ─────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ─────────────────────────────────────────────
+// XP / STATS
+// ─────────────────────────────────────────────
+function addXP(amount) {
+  state.xp += amount;
+  updateXPDisplay();
+  updateProgress();
+}
+
+function updateXPDisplay() {
+  var xpEl = document.getElementById('xp-display');
+  if (xpEl) xpEl.textContent = state.xp;
+}
+
+function updateStats() {
+  var el;
+  el = document.getElementById('stat-tasks'); if (el) el.textContent = state.tasksCompleted;
+  el = document.getElementById('stat-tests'); if (el) el.textContent = state.testsRun;
+  el = document.getElementById('stat-issues'); if (el) el.textContent = state.issueCount;
+  el = document.getElementById('stat-xp'); if (el) el.textContent = state.xp;
+}
+
+function updateProgress() {
+  var totalTasks = 0, done = 0;
+  Object.values(state.tasks).forEach(function(week) { week.forEach(function(t) { totalTasks++; if (t.done) done++; }); });
+  var pct = totalTasks > 0 ? Math.round((done / totalTasks) * 100) : 0;
+  var bar = document.getElementById('overall-progress');
+  var pctEl = document.getElementById('overall-pct');
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '% complete';
+}
+
+// ─────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────
+function showToast(message, type) {
+  var container = document.getElementById('toast-container');
+  var toast = document.createElement('div');
+  toast.className = 'toast ' + (type || 'info');
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(function() {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s';
+    setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+  }, 3000);
+}
+
+// ─────────────────────────────────────────────
+// HINTS
+// ─────────────────────────────────────────────
+document.querySelectorAll('.hint-toggle').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var content = el.nextElementSibling;
+    if (content) content.classList.toggle('visible');
+    el.textContent = content && content.classList.contains('visible') ? '▾ Hide Answer' : '▸ Show Hint';
+  });
+});
+
+// ─────────────────────────────────────────────
+// DAILY TIPS
+// ─────────────────────────────────────────────
+var tips = [
+  'Every time you test an API, ask: What should happen? What actually happened? How do I prove it?',
+  'Test the happy path first (valid data → expected success), then the sad path (invalid/missing data → expected error).',
+  'When you find a bug, write the reproduction steps IMMEDIATELY before you forget. Future you will thank you.',
+  'A 500 error is always the server\'s fault. A 400 error means your request was wrong. A 401 means you\'re not authenticated.',
+  'Newman tip: always add --delay-request 300 to avoid overwhelming staging servers with rapid-fire requests.',
+  'Good bug reports get fixed faster. The more specific you are, the less back-and-forth with developers.',
+  'Always test with valid data first, then try: empty values, very long strings, special characters, negative numbers.',
+  'Environment variables in Postman mean you never hardcode tokens or URLs. This is a professional habit to build now.',
+];
+var tipEl = document.getElementById('daily-tip');
+if (tipEl) tipEl.textContent = tips[new Date().getDay() % tips.length];
+
+// ─────────────────────────────────────────────
+// CLOSE MODAL ON OVERLAY CLICK
+// ─────────────────────────────────────────────
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// INIT
+renderTasks();
+updateProgress();
+updateStats();
+</script>
+</body>
+</html>
