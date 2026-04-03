@@ -40,14 +40,14 @@ cd SQA-training-platform-website
 
 3. Open the main file in your browser:
 
-- Open sqa-learning-platform.html directly, or
+- Open index.html directly, or
 - Use VS Code Live Server extension for a local server preview
 
 ## Project Structure
 
 ```text
 SQA-training-platform-website/
-|- sqa-learning-platform.html
+|- index.html
 |- README.md
 ```
 
